@@ -26,6 +26,7 @@ public class PowerArgsProgram
     [HelpHook]
     [ArgDescription("Shows help descriptions.")]
     public bool Help { get; set; }
+
     [ArgRequired]
     [ArgPosition(0)]
     [ArgDescription("Root folder (usually solution folder) to look for csproj files recursively.")]
@@ -68,6 +69,7 @@ public class PowerArgsProgram
     [ArgDescription("Comma separated list of package name prefixes to exclude. Wildcards not allowed. Only the filename is considered, case insensitive. If specified, 'IncludePackages' is overridden to True. This must be a subset of includes to be useful. Ex: 'Microsoft.Logging, Azure' Excludes packages starting with Microsoft.Logging and packages starting with Azure")]
     [ArgShortcut("EPaN")]
     public string ExcludePackageNamespaces { get; set; }
+
     [ArgDefaultValue("")]
     [ArgDescription("Comma Separated list of folders (either absolute paths or relative to SourceFolder) to skip during scan, even if there are references to them from your projects.")]
     [ArgShortcut("EFol")]
@@ -77,6 +79,11 @@ public class PowerArgsProgram
     [ArgDescription("Set if you want the scan to follow valid reparse points. This is helpful if your project references are relying on symlinks, NTFS junction points .etc.")]
     [ArgShortcut("FReP")]
     public bool FollowReparsePoints { get; set; }
+
+    [ArgDefaultValue("")]
+    [ArgDescription("Comma separated list of solution file names to analyze. Wildcards not allowed. The list of projects to investigate are read from these files. This is helpful if your repository folder contains projects that are not in use by the solution.")]
+    [ArgShortcut("SF")]
+    public string SolutionFiles { get; set; }
 
 
     public void Main()
@@ -98,8 +105,10 @@ public class PowerArgsProgram
 
             SourceFolder = SourceFolder,
 
+            SolutionFiles = SolutionFiles,
         };
         var result = service.Discover();
+
         new ResultWriter().Write(result, OutputType, OutputPath, HtmlTitle);
     }
 }
